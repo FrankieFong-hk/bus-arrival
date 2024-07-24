@@ -6,7 +6,7 @@ export default function Home() {
   console.log(data);
   return (
     <>
-      <div>Home</div>
+      <div className="text-red-500">Home</div>
       <div>Home</div>
       <div>Home</div>
     </>
