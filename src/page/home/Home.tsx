@@ -5,6 +5,7 @@ import {
   CardFooter,
   CardHeader,
   Input,
+  Spinner,
 } from "@nextui-org/react";
 import {
   useGetBusStopDetailQuery,
@@ -15,49 +16,68 @@ import {
   useGetRouteStopDetailQuery,
   useGetRouteStopListQuery,
 } from "../../api/busApiSlice";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import debounce from "lodash/debounce";
 
 export default function Home() {
   const [search, setSearch] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const { data: routeList, isLoading } = useGetRouteListQuery();
 
-  const { data: routeList } = useGetRouteListQuery();
-  const { data } = useGetRouteDetailQuery({
-    route: "1A",
-    direction: "outbound",
-    service_type: "1",
-  });
+  // Debounce the search function
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      setSearch(value);
+      setIsSearching(false);
+    }, 300),
+    []
+  );
 
-  const { data: stopList } = useGetBusStopListQuery();
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsSearching(true);
+    debouncedSearch(e.target.value);
+  };
 
-  const { data: stopDetail } = useGetBusStopDetailQuery("6156B488BEB726C6");
+  const filteredRoutes = routeList?.data
+    .filter((route) => route.route.toLowerCase().includes(search.toLowerCase()))
+    .slice(0, 10);
 
-  const { data: routeStopList } = useGetRouteStopListQuery();
-
-  const { data: routeStopDetail } = useGetRouteStopDetailQuery({
-    route: "1A",
-    direction: "outbound",
-    service_type: "1",
-  });
-
-  const { data: ETA } = useGetETAQuery({
-    route: "1",
-    stop_id: "18492910339410B1",
-    service_type: "1",
-  });
-
-  console.log(routeList);
   return (
-    <div className="max-w-[500px] mx-auto">
-      <Input onChange={(e) => setSearch(e.target.value)} />
+    <div className="max-w-[500px] mx-auto min-h-screen p-4">
+      <Input
+        label="Search routes"
+        placeholder="Enter route number"
+        onChange={handleSearchChange}
+        className="mb-4"
+      />
       <Card>
-        <CardHeader>Header</CardHeader>
+        <CardHeader>Bus Routes</CardHeader>
         <CardBody>
-          {routeList?.data
-            .filter((route) => route.route.includes(search))
-            .slice(0, 10)
-            .map((item) => item.route)}
+          {isLoading || isSearching ? (
+            <div className="flex justify-center">
+              <Spinner />
+            </div>
+          ) : filteredRoutes && filteredRoutes.length > 0 ? (
+            filteredRoutes.map((item) => (
+              <div
+                key={item.route}
+                className="mb-2 p-2 bg-gray-100 rounded bg-black"
+              >
+                <p className="font-bold">{item.route}</p>
+                <p className="text-sm">To {item.dest_en}</p>
+              </div>
+            ))
+          ) : (
+            <p>No routes found</p>
+          )}
         </CardBody>
-        <CardFooter>Footer</CardFooter>
+        <CardFooter>
+          {filteredRoutes && filteredRoutes.length > 0 && (
+            <p className="text-sm text-gray-500">
+              Showing {filteredRoutes.length} of {routeList?.data.length} routes
+            </p>
+          )}
+        </CardFooter>
       </Card>
     </div>
   );

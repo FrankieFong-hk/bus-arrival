@@ -10,7 +10,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <React.StrictMode>
       <NextUIProvider>
-        <main className="dark">
+        <main className="dark text-foreground bg-background">
           <App />
         </main>
       </NextUIProvider>
