@@ -18,6 +18,8 @@ import {
 } from "../../api/busApiSlice";
 import { useState, useCallback } from "react";
 import debounce from "lodash/debounce";
+import { Link } from "react-router-dom";
+import { Bus } from "@styled-icons/boxicons-regular/Bus";
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -43,7 +45,9 @@ export default function Home() {
     .slice(0, 10);
 
   return (
-    <div className="max-w-[500px] mx-auto min-h-screen p-4">
+    <div>
+      <Bus width={24} height={24} />
+
       <Input
         label="Search routes"
         placeholder="Enter route number"
@@ -59,13 +63,15 @@ export default function Home() {
             </div>
           ) : filteredRoutes && filteredRoutes.length > 0 ? (
             filteredRoutes.map((item) => (
-              <div
-                key={item.route}
-                className="mb-2 p-2 bg-gray-100 rounded bg-black"
+              <Link
+                key={item.route + item.bound}
+                to={`/route/${item.route}/${item.bound}`}
               >
-                <p className="font-bold">{item.route}</p>
-                <p className="text-sm">To {item.dest_en}</p>
-              </div>
+                <div className="mb-2 p-2 rounded bg-black">
+                  <p className="font-bold">{item.route}</p>
+                  <p className="text-sm">To {item.dest_en}</p>
+                </div>
+              </Link>
             ))
           ) : (
             <p>No routes found</p>

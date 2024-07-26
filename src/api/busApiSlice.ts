@@ -56,7 +56,7 @@ export const busApiSlice = createApi({
     // at the stop. Please note that the returned ETA information is also included in other service types
     // of the same route number if they share the same bus stop.
     getETA: builder.query<
-      SuccessResponse<ETA>,
+      SuccessResponse<ETA[]>,
       { route: string; stop_id: string; service_type: string }
     >({
       query: ({ route, stop_id, service_type }) => ({
