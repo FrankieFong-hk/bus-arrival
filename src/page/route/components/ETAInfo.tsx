@@ -1,15 +1,17 @@
 import {
   useGetBusStopDetailQuery,
   useGetETAQuery,
+  useGetRouteFareQuery,
 } from "../../../api/busApiSlice";
 import dayjs from "dayjs";
 
 interface ETAInfoProps {
   route: string;
   stop_id: string;
+  seq: Number;
 }
 
-export default function ETAInfo({ route, stop_id }: ETAInfoProps) {
+export default function ETAInfo({ route, stop_id, seq }: ETAInfoProps) {
   const { data: eta, isLoading } = useGetETAQuery({
     route,
     stop_id,

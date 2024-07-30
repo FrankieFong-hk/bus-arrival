@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import {
   useGetETAAllRouteQuery,
   useGetRouteDetailQuery,
+  useGetRouteFareQuery,
   useGetRouteStopDetailQuery,
   useGetRouteStopListQuery,
 } from "../../api/busApiSlice";
@@ -33,12 +34,16 @@ export default function RoutePage() {
     service_type: "1",
   });
 
-  console.log(routeStopList);
+  const { data: routeFare } = useGetRouteFareQuery({
+    route: routeId ?? "",
+  });
+
   return (
     <div>
       <Card>
         <CardHeader>
-          {routeDetails?.data.route} To {routeDetails?.data.dest_en}
+          {routeDetails?.data.route} To {routeDetails?.data.dest_en} ($
+          {routeFare?.data})
         </CardHeader>
         <CardBody>
           {routeStopListLoading ? (
@@ -48,7 +53,11 @@ export default function RoutePage() {
           ) : routeStopList && routeStopList?.data.length > 0 ? (
             routeStopList.data.map((item) => (
               <div key={item.stop} className="mb-2 p-2 rounded bg-black">
-                <ETAInfo route={item.route} stop_id={item.stop} />
+                <ETAInfo
+                  route={item.route}
+                  stop_id={item.stop}
+                  seq={item.seq}
+                />
                 <p className="font-bold">{item.route}</p>
                 <p className="text-sm">To {item.stop}</p>
               </div>

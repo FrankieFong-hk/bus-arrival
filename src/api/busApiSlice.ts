@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { SuccessResponse } from "./DTO/common.interface";
 import { ETA, RouteList, RouteStopList, StopList } from "./DTO/bus.interface";
+import JSON_BUS from "../data/JSON_BUS.json";
 
 export const busApiSlice = createApi({
   reducerPath: "busApiSlice",
@@ -84,6 +85,23 @@ export const busApiSlice = createApi({
         url: `/v1/transport/kmb/route-eta/${route}/${service_type}`,
       }),
     }),
+
+    getRouteFare: builder.query<{ data: number | null }, { route: string }>({
+      queryFn: (arg): { data: { data: number | null } } => {
+        const fareData = JSON_BUS.features as Array<{
+          properties: {
+            routeNameE: string;
+            fullFare: number;
+          };
+        }>;
+        const routeFare = fareData.find(
+          (item) => item.properties.routeNameE === arg.route
+        );
+        return {
+          data: { data: routeFare ? routeFare.properties.fullFare : null },
+        };
+      },
+    }),
   }),
 });
 
@@ -97,4 +115,5 @@ export const {
   useGetETAQuery,
   useGetETAAllQuery,
   useGetETAAllRouteQuery,
+  useGetRouteFareQuery,
 } = busApiSlice;
