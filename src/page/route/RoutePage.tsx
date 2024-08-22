@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import {
   useGetETAAllRouteQuery,
   useGetRouteDetailQuery,
-  useGetRouteFareQuery,
   useGetRouteStopDetailQuery,
   useGetRouteStopListQuery,
 } from "../../api/busApiSlice";
@@ -34,16 +33,15 @@ export default function RoutePage() {
     service_type: "1",
   });
 
-  const { data: routeFare } = useGetRouteFareQuery({
-    route: routeId ?? "",
-  });
+  // const { data: routeFare } = useGetRouteFareQuery({
+  //   route: routeId ?? "",
+  // });
 
   return (
     <div>
       <Card>
         <CardHeader>
-          {routeDetails?.data.route} To {routeDetails?.data.dest_en} ($
-          {routeFare?.data})
+          {routeDetails?.data.route} To {routeDetails?.data.dest_en}
         </CardHeader>
         <CardBody>
           {routeStopListLoading ? (

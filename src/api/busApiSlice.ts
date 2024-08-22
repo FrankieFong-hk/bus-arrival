@@ -86,22 +86,22 @@ export const busApiSlice = createApi({
       }),
     }),
 
-    getRouteFare: builder.query<{ data: number | null }, { route: string }>({
-      queryFn: (arg): { data: { data: number | null } } => {
-        const fareData = JSON_BUS.features as Array<{
-          properties: {
-            routeNameE: string;
-            fullFare: number;
-          };
-        }>;
-        const routeFare = fareData.find(
-          (item) => item.properties.routeNameE === arg.route
-        );
-        return {
-          data: { data: routeFare ? routeFare.properties.fullFare : null },
-        };
-      },
-    }),
+    // getRouteFare: builder.query<{ data: number | null }, { route: string }>({
+    //   queryFn: (arg): { data: { data: number | null } } => {
+    //     const fareData = JSON_BUS.features as Array<{
+    //       properties: {
+    //         routeNameE: string;
+    //         fullFare: number;
+    //       };
+    //     }>;
+    //     const routeFare = fareData.find(
+    //       (item) => item.properties.routeNameE === arg.route
+    //     );
+    //     return {
+    //       data: { data: routeFare ? routeFare.properties.fullFare : null },
+    //     };
+    //   },
+    // }),
   }),
 });
 
@@ -115,5 +115,5 @@ export const {
   useGetETAQuery,
   useGetETAAllQuery,
   useGetETAAllRouteQuery,
-  useGetRouteFareQuery,
+  // useGetRouteFareQuery,
 } = busApiSlice;
